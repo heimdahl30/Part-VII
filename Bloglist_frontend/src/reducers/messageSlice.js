@@ -1,12 +1,18 @@
-export const messageReducer = (state = null, action) => {
-  switch (action.type) {
-    case "MESSAGE":
+import { createSlice } from "@reduxjs/toolkit";
+
+const messageSlice = createSlice({
+  name: "messages",
+  initialState: null,
+  reducers: {
+    printMsg: (state, action) => {
       return action.payload;
-    case "ERROR":
-      return action.payload;
-    case "CLEAR":
+    },
+
+    clearMsg: () => {
       return null;
-    default:
-      return state;
-  }
-};
+    },
+  },
+});
+
+export const { printMsg, clearMsg } = messageSlice.actions;
+export default messageSlice.reducer;

@@ -6,11 +6,16 @@ import BlogCreateForm from "./components/BlogCreateForm";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import { printMsg, clearMsg } from "./reducers/messageSlice";
-import { createBlog } from "./reducers/blogsSlice";
+import {
+  appendBlog,
+  initializeBlogs,
+  likeBlog,
+  delBlog,
+} from "./reducers/blogSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 const App = () => {
-  //const [blogs, setBlogs] = useState([]);
+  // const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState([]);
   const [password, setPassword] = useState([]);
   const [user, setUser] = useState(null);
@@ -21,16 +26,14 @@ const App = () => {
   const msg = useSelector((state) => state.messages);
   const blogs = useSelector((state) => state.blogs);
 
-  /*useEffect(() => {
-    blogService.getAll().then((blogs) => {
-      setBlogs(blogs);
-    });
-  }, []);*/
+  useEffect(() => {
+    dispatch(initializeBlogs());
+  }, []);
 
   console.log(username);
   console.log(password);
 
-  let sortedBlog = blogs.sort((a, b) => b.likes - a.likes);
+  let sortedBlog = [...blogs].sort((a, b) => b.likes - a.likes);
 
   console.log(sortedBlog);
 
@@ -43,7 +46,7 @@ const App = () => {
 
       blogService.setToken(user.token);
 
-      console.log("Success");
+      console.log("Success", user);
       setUser(user);
       setUsername("");
       setPassword("");
@@ -63,8 +66,8 @@ const App = () => {
   };
 
   const addBlog = (newBlog) => {
-    dispatch(createBlog(newBlog));
-    dispatch(printMsg(`a new blog ${returnedBlog.title} has been created`));
+    dispatch(appendBlog(newBlog));
+    dispatch(printMsg(`a new blog ${newBlog.title} has been created`));
     setTimeout(() => {
       dispatch(clearMsg());
     }, 5000);
@@ -76,7 +79,9 @@ const App = () => {
     console.log(blog.id);
     console.log(updatedBlog);
 
-    blogService
+    dispatch(likeBlog(updatedBlog));
+
+    /*blogService
       .update(blog.id, updatedBlog)
       .then((result) => {
         setBlogs(
@@ -84,16 +89,20 @@ const App = () => {
         );
       })
       .catch((error) => console.log(error));
+      */
   };
 
   const deleteBlog = (blog) => {
     if (window.confirm(`Remove ${blog.title}`)) {
+      dispatch(delBlog(blog));
+      /*
       blogService
         .remove(blog.id)
         .then(() => {
           setBlogs(blogs.filter((post) => post.id !== blog.id));
         })
         .catch((error) => console.log(error));
+        */
     }
   };
 
