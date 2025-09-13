@@ -1,5 +1,6 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import blogService from "../services/blogs";
+import { initializeUsers } from "./userSlice";
 
 const blogSlice = createSlice({
   name: "blogs",
@@ -24,18 +25,21 @@ export const initializeBlogs = () => {
 export const appendBlog = (content) => {
   return async (dispatch) => {
     const newBlog = await blogService.create(content);
+    console.log("newBlog blogSlice vich", newBlog);
     dispatch(createBlog(newBlog));
+    dispatch(initializeUsers());
   };
 };
 
 export const likeBlog = (blog) => {
   return async (dispatch) => {
-    const likedBlog = await blogService.update(blog.id, blog);
+    await blogService.update(blog.id, blog);
     const blogList = await blogService.getAll();
-    const updatedBlogList = blogList.map((blogItem) =>
+    console.log("blogList", blogList);
+    /* const updatedBlogList = blogList.map((blogItem) =>
       blogItem.id === blog.id ? likedBlog : blogItem
-    );
-    dispatch(setBlogs(updatedBlogList));
+    ); */
+    dispatch(setBlogs(blogList));
   };
 };
 
@@ -43,8 +47,18 @@ export const delBlog = (blog) => {
   return async (dispatch) => {
     await blogService.remove(blog.id);
     const blogList = await blogService.getAll();
-    const updatedList = blogList.filter((blogItem) => blogItem.id !== blog.id);
-    dispatch(setBlogs(updatedList));
+    console.log("delete blogList", blogList);
+    // const updatedList = blogList.filter((blogItem) => blogItem.id !== blog.id);
+    dispatch(setBlogs(blogList));
+    dispatch(initializeUsers());
+  };
+};
+
+export const addComments = (blog, comment) => {
+  return async (dispatch) => {
+    await blogService.comment(comment, blog.id);
+    const blogList = await blogService.getAll();
+    dispatch(setBlogs(blogList));
   };
 };
 

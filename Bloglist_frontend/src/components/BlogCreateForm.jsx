@@ -1,4 +1,17 @@
 import { useState } from "react";
+import styled from "styled-components";
+
+const Button = styled.button`
+  background: Bisque;
+  font-size: 1em;
+  margin: 1em;
+  padding: 0.25em 1em;
+  border: 2px solid Chocolate;
+  border-radius: 3px;
+`;
+const Input = styled.input`
+  margin: 0.25em;
+`;
 
 const BlogCreateForm = ({ createBlog }) => {
   const [title, setTitle] = useState("");
@@ -23,7 +36,7 @@ const BlogCreateForm = ({ createBlog }) => {
       <form onSubmit={addBlog}>
         <div>
           title:
-          <input
+          <Input
             data-testid="title"
             type="text"
             value={title}
@@ -34,7 +47,7 @@ const BlogCreateForm = ({ createBlog }) => {
         </div>
         <div>
           author:
-          <input
+          <Input
             data-testid="author"
             type="text"
             value={author}
@@ -45,7 +58,7 @@ const BlogCreateForm = ({ createBlog }) => {
         </div>
         <div>
           url:
-          <input
+          <Input
             data-testid="url"
             type="url"
             value={url}
@@ -54,7 +67,7 @@ const BlogCreateForm = ({ createBlog }) => {
             placeholder="url...."
           />
         </div>
-        <button type="submit">submit</button>
+        <Button type="submit">submit</Button>
       </form>
     </div>
   );
